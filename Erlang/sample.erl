@@ -31,6 +31,8 @@ each_record(Fun, Arg) ->
 			print_field(R),
 			io:format("</record>\n"),
 			each_record(Fun, Arg2);
+		{eof, Arg2} ->
+			{eof, Arg2};
 		Other ->
 			io:format("failed to parse: ~p~n", [Other])
 	end.
