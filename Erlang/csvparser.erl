@@ -1,4 +1,4 @@
-%% Copyright [yyyy] [name of copyright owner]
+%% Copyright 2012 Norio Agawa
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
 %% you may not use this file except in compliance with the License.
@@ -19,182 +19,182 @@
 %% @spec read(Fun, Arg) => {ok, [Field, Field, ...}, NextArg}
 %%                         {eof, NextArg}
 read(Fun, Arg) ->
-	case read(Fun, Arg, state_RECORD_BEGIN, [], []) of
+	case read(Fun, Arg, [], [], state_RECORD_BEGIN) of
 		{ok, [], Arg2} -> {eof, Arg2};
 		Else -> Else
 	end.
 
-read(Fun, Arg, state_RECORD_BEGIN, F, R) ->
+read(Fun, Arg, F, R, state_RECORD_BEGIN) ->
 	try Fun(Arg) of
 		{ok, ",", Arg2} -> read(Fun, Arg2,
-				state_FIELD_BEGIN,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_FIELD_BEGIN);
 		{ok, "\"", Arg2} -> read(Fun, Arg2,
-				state_ESCAPED,
 				F,
-				R);
+				R,
+				state_ESCAPED);
 		{ok, "\r", Arg2} -> read(Fun, Arg2,
-				state_CR,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_CR);
 		{ok, "\n", Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_RECORD_END);
 		{ok, [C], Arg2} -> read(Fun, Arg2,
-				state_NONESCAPED,
 				[C|F],
-				R);
+				R,
+				state_NONESCAPED);
 		{eof, Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				F,
-				R)
+				R,
+				state_RECORD_END)
 	catch
 		_:Why -> {ioerror, Why}
 	end;
 
-read(Fun, Arg, state_FIELD_BEGIN, F, R) ->
+read(Fun, Arg, F, R, state_FIELD_BEGIN) ->
 	try Fun(Arg) of
 		{ok, ",", Arg2} -> read(Fun, Arg2,
-				state_FIELD_BEGIN,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_FIELD_BEGIN);
 		{ok, "\"", Arg2} -> read(Fun, Arg2,
-				state_ESCAPED,
 				F,
-				R);
+				R,
+				state_ESCAPED);
 		{ok, "\r", Arg2} -> read(Fun, Arg2,
-				state_CR,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_CR);
 		{ok, "\n", Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_RECORD_END);
 		{ok, [C], Arg2} -> read(Fun, Arg2,
-				state_NONESCAPED,
 				[C|F],
-				R);
+				R,
+				state_NONESCAPED);
 		{eof, Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				[],
-				[lists:reverse(F)|R])
+				[lists:reverse(F)|R],
+				state_RECORD_END)
 	catch
 		_:Why -> {ioerror, Why}
 	end;
 
-read(Fun, Arg, state_NONESCAPED, F, R) ->
+read(Fun, Arg, F, R, state_NONESCAPED) ->
 	try Fun(Arg) of
 		{ok, ",", Arg2} -> read(Fun, Arg2,
-				state_FIELD_BEGIN,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_FIELD_BEGIN);
 		{ok, "\"", Arg2} -> read(Fun, Arg2,
-				state_NONESCAPED,
 				[$"|F],
-				R);
+				R,
+				state_ESCAPED);
 		{ok, "\r", Arg2} -> read(Fun, Arg2,
-				state_CR,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_CR);
 		{ok, "\n", Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_RECORD_END);
 		{ok, [C], Arg2} -> read(Fun, Arg2,
-				state_NONESCAPED,
 				[C|F],
-				R);
+				R,
+				state_NONESCAPED);
 		{eof, Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				[],
-				[lists:reverse(F)|R])
+				[lists:reverse(F)|R],
+				state_RECORD_END)
 	catch
 		_:Why -> {ioerror, Why}
 	end;
 
-read(Fun, Arg, state_ESCAPED, F, R) ->
+read(Fun, Arg, F, R, state_ESCAPED) ->
 	try Fun(Arg) of
 		{ok, ",", Arg2} -> read(Fun, Arg2,
-				state_ESCAPED,
 				[$,|F],
-				R);
+				R,
+				state_ESCAPED);
 		{ok, "\"", Arg2} -> read(Fun, Arg2,
-				state_DQUOTE,
 				F,
-				R);
+				R,
+				state_DQUOTE);
 		{ok, "\r", Arg2} -> read(Fun, Arg2,
-				state_ESCAPED,
 				[$\r|F],
-				R);
+				R,
+				state_ESCAPED);
 		{ok, "\n", Arg2} -> read(Fun, Arg2,
-				state_ESCAPED,
 				[$\n|F],
-				R);
+				R,
+				state_ESCAPED);
 		{ok, [C], Arg2} -> read(Fun, Arg2,
-				state_ESCAPED,
 				[C|F],
-				R);
+				R,
+				state_ESCAPED);
 		{eof, Arg2} -> 
 				{formaterror, eof, lists:reverse(F), lists:reverse(R), Arg2}
 	catch
 		_:Why -> {ioerror, Why}
 	end;
 
-read(Fun, Arg, state_DQUOTE, F, R) ->
+read(Fun, Arg, F, R, state_DQUOTE) ->
 	try Fun(Arg) of
 		{ok, ",", Arg2} -> read(Fun, Arg2,
-				state_FIELD_BEGIN,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_FIELD_BEGIN);
 		{ok, "\"", Arg2} -> read(Fun, Arg2,
-				state_ESCAPED,
 				[$"|F],
-				R);
+				R,
+				state_ESCAPED);
 		{ok, "\r", Arg2} -> read(Fun, Arg2,
-				state_CR,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_CR);
 		{ok, "\n", Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				[],
-				[lists:reverse(F)|R]);
+				[lists:reverse(F)|R],
+				state_RECORD_END);
 		{ok, [C], Arg2} ->
 				{formaterror, [C], lists:reverse(F), lists:reverse(R), Arg2};
 		{eof, Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				[],
-				[lists:reverse(F)|R])
+				[lists:reverse(F)|R],
+				state_RECORD_END)
 	catch
 		_:Why -> {ioerror, Why}
 	end;
 
-read(Fun, Arg, state_CR, F, R) ->
+read(Fun, Arg, F, R, state_CR) ->
 	try Fun(Arg) of
 		{ok, ",", Arg2} ->
 				{formaterror, [$,], lists:reverse(F), lists:reverse(R), Arg2};
 		{ok, "\"", Arg2} ->
 				{formaterror, [$"], lists:reverse(F), lists:reverse(R), Arg2};
 		{ok, "\r", Arg2} -> read(Fun, Arg2,
-				state_CR,
 				F,
-				R);
+				R,
+				state_CR);
 		{ok, "\n", Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				F,
-				R);
+				R,
+				state_RECORD_END);
 		{ok, [C], Arg2} ->
 				{formaterror, [C], lists:reverse(F), lists:reverse(R), Arg2};
 		{eof, Arg2} -> read(Fun, Arg2,
-				state_RECORD_END,
 				F,
-				R)
+				R,
+				state_RECORD_END)
 	catch
 		_:Why -> {ioerror, Why}
 	end;
 
-read(_Fun, Arg, state_RECORD_END, _F, R) ->
+read(_Fun, Arg, _F, R, state_RECORD_END) ->
 	{ok, lists:reverse(R), Arg}.
 
 
@@ -207,6 +207,7 @@ file(IoDevice) ->
 		eof ->
 			{eof, IoDevice}
 	end.
+
 
 %% @spec string(String) => {ok, [Char], RestOfString}.
 %%                         {eof, []}
