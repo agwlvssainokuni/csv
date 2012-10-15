@@ -18,7 +18,7 @@
 main([ARGV]) ->
 	case file:open(ARGV, read) of
 		{ok, IoDev} ->
-			each_record(fun(D) -> csvparser:file(D) end, IoDev),
+			each_record(fun csvparser:file/1, IoDev),
 			file:close(IoDev);
 		{error, Why} ->
 			io:format("failed to open ~s (reason: ~p)~n", [ARGV, Why])
