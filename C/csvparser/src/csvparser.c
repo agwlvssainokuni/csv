@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include <apr_errno.h>
-#include <apr_file_io.h>
 #include <apr_strings.h>
 #include <csvstate.h>
 #include "csvparser.h"
@@ -57,7 +55,7 @@ apr_status_t CsvParserReadRecord(
 
 		// (4) ファイルから1文字読み込む
 		status = apr_file_getc(&ch, file);
-		if (APR_SUCCESS != status) {
+		if (APR_SUCCESS == status) {
 			ich = (int) ch;
 		} else if (APR_STATUS_IS_EOF(status)) {
 			ich = -1;
@@ -115,16 +113,14 @@ apr_status_t CsvParserReadRecord(
 
 		// (9) 1レコード読込んだら、ループを終了する。
 		if (CsvStateIsEndOfRecord(&csvstate)) {
-			break;
-		}
-
-		// (10) EOFに達したら、ループを終了する。
-		if (APR_STATUS_IS_EOF(status)) {
+			if (APR_STATUS_IS_EOF(status)) {
+				result = status;
+			}
 			break;
 		}
 	}
 
-	// (11) 子プールを破棄する。
+	// (10) 子プールを破棄する。
 	apr_pool_destroy(fld_pool);
 
 	return result;
