@@ -12,5 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-SUBDIRS = src sample
-ACLOCAL_AMFLAGS = -I m4
+noinst_PROGRAMS = sample
+sample_SOURCES = sample.c
+
+AM_CFLAGS = -I../src $(apr-config --includes)
+AM_LDFLAGS = -lcsvstate $(apr-config --link-ld)
+#AM_LDFLAGS = /usr/lib/libcsvstate.la $(apr-config --link-libtool)
