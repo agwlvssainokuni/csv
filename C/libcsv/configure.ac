@@ -29,6 +29,17 @@ AC_CHECK_HEADERS([stdlib.h])
 
 # Checks for library functions.
 
+
+AC_ARG_ENABLE(parser,
+[  --disable-parser  Do not build csvparser],
+[case "${enableval}" in
+  yes) parser=true  ;;
+  no)  parser=false ;;
+  *)   AC_MSG_ERROR(bad value ${enableval} for --disable-parser) ;;
+esac], [parser=true])
+AM_CONDITIONAL(PARSER, test x$parser = xtrue)
+
+
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/parser/Makefile

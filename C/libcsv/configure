@@ -613,6 +613,8 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+PARSER_FALSE
+PARSER_TRUE
 CXXCPP
 OTOOL64
 OTOOL
@@ -739,6 +741,7 @@ enable_fast_install
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
+enable_parser
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1380,6 +1383,7 @@ Optional Features:
   --enable-fast-install[=PKGS]
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
+  --disable-parser  Do not build csvparser
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -15182,6 +15186,28 @@ done
 
 # Checks for library functions.
 
+
+# Check whether --enable-parser was given.
+if test "${enable_parser+set}" = set; then :
+  enableval=$enable_parser; case "${enableval}" in
+  yes) parser=true  ;;
+  no)  parser=false ;;
+  *)   as_fn_error $? "bad value ${enableval} for --disable-parser" "$LINENO" 5 ;;
+esac
+else
+  parser=true
+fi
+
+ if test x$parser = xtrue; then
+  PARSER_TRUE=
+  PARSER_FALSE='#'
+else
+  PARSER_TRUE='#'
+  PARSER_FALSE=
+fi
+
+
+
 ac_config_files="$ac_config_files Makefile src/Makefile src/parser/Makefile src/parser/sample/Makefile src/state/Makefile src/state/sample/Makefile"
 
 cat >confcache <<\_ACEOF
@@ -15311,6 +15337,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${PARSER_TRUE}" && test -z "${PARSER_FALSE}"; then
+  as_fn_error $? "conditional \"PARSER\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

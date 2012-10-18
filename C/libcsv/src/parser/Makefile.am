@@ -18,4 +18,4 @@ include_HEADERS = csvparser.h
 lib_LTLIBRARIES = libcsvparser.la
 libcsvparser_la_SOURCES = csvparser.c
 
-AM_CFLAGS = -I../state -I/usr/include/apr-1.0
+AM_CFLAGS = -I../state `apr-config --includes`

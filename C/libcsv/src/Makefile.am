@@ -12,4 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-SUBDIRS = state parser
+if PARSER
+parser = parser
+else
+parser =
+endif
+
+SUBDIRS = state $(parser)

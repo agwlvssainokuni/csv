@@ -16,4 +16,4 @@ noinst_PROGRAMS = sample
 sample_SOURCES = main.c
 
 AM_CFLAGS = -I.. -I/usr/include/apr-1.0
-AM_LDFLAGS = ../libcsvparser.la ../../state/libcsvstate.la /usr/lib/libapr-1.la
+AM_LDFLAGS = ../libcsvparser.la ../../state/libcsvstate.la `apr-config --link-libtool`
