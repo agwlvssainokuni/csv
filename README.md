@@ -10,7 +10,8 @@ CSVパーサ
 * Java
   * https://github.com/agwlvssainokuni/cherry.git のcherry-utilプロジェクト。
 * C言語
-  * CSV解析の状態遷移機械のみ。
+  * CSV解析の状態遷移機械。
+  * CSVパーサ (APRでメモリ管理)。
 * Ruby
-  * C言語版を使用した拡張ライブラリ。
+  * C言語版の状態遷移機械を使用した拡張ライブラリ。
 * Erlang
