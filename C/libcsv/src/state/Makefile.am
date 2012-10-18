@@ -12,5 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-lib_LTLIBRARIES = libcsvparser.la
-libcsvparser_la_SOURCES = csvparser.c
+SUBDIRS = . sample
+
+include_HEADERS = csvstate.h
+lib_LTLIBRARIES = libcsvstate.la
+libcsvstate_la_SOURCES = csvstate.c

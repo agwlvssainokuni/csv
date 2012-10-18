@@ -49,7 +49,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = sample$(EXEEXT)
-subdir = sample
+subdir = src/parser/sample
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
@@ -63,7 +63,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_sample_OBJECTS = sample.$(OBJEXT)
+am_sample_OBJECTS = main.$(OBJEXT)
 sample_OBJECTS = $(am_sample_OBJECTS)
 sample_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -202,9 +202,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-sample_SOURCES = sample.c
-AM_CFLAGS = -I../include
-AM_LDFLAGS = -L../lib -lcsvstate
+sample_SOURCES = main.c
+AM_CFLAGS = -I.. -I/usr/include/apr-1.0
+AM_LDFLAGS = ../libcsvparser.la ../../state/libcsvstate.la /usr/lib/libapr-1.la
 all: all-am
 
 .SUFFIXES:
@@ -218,9 +218,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu sample/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/parser/sample/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu sample/Makefile
+	  $(AUTOMAKE) --gnu src/parser/sample/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -258,7 +258,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sample.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

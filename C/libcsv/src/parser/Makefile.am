@@ -12,5 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-SUBDIRS = include lib sample
-ACLOCAL_AMFLAGS = -I m4
+SUBDIRS = . sample
+
+include_HEADERS = csvparser.h
+lib_LTLIBRARIES = libcsvparser.la
+libcsvparser_la_SOURCES = csvparser.c
+
+AM_CFLAGS = -I../state -I/usr/include/apr-1.0

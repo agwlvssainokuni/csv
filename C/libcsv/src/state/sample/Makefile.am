@@ -12,4 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-include_HEADERS = csvstate.h
+noinst_PROGRAMS = sample
+sample_SOURCES = main.c
+
+AM_LDFLAGS = -L.. -lcsvstate

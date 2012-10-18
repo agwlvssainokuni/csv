@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([csvstate], [0.0])
+AC_INIT([libcsv], [0.0])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -30,7 +30,9 @@ AC_CHECK_HEADERS([stdlib.h])
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
-                 include/Makefile
-                 lib/Makefile
-                 sample/Makefile])
+                 src/Makefile
+                 src/parser/Makefile
+                 src/parser/sample/Makefile
+                 src/state/Makefile
+                 src/state/sample/Makefile])
 AC_OUTPUT

@@ -12,8 +12,5 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-noinst_PROGRAMS = sample
-sample_SOURCES = sample.c
-
-AM_CFLAGS = -I../include
-AM_LDFLAGS = -L../lib -lcsvstate
+SUBDIRS = src
+ACLOCAL_AMFLAGS = -I m4

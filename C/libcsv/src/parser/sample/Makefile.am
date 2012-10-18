@@ -12,7 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-lib_LTLIBRARIES = libcsvstate.la
-libcsvstate_la_SOURCES = csvstate.c
+noinst_PROGRAMS = sample
+sample_SOURCES = main.c
 
-AM_CFLAGS = -I../include
+AM_CFLAGS = -I.. -I/usr/include/apr-1.0
+AM_LDFLAGS = ../libcsvparser.la ../../state/libcsvstate.la /usr/lib/libapr-1.la
