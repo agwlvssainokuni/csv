@@ -203,7 +203,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 sample_SOURCES = main.c
-AM_LDFLAGS = -L.. -lcsvstate
+AM_CFLAGS = -I..
+AM_LDFLAGS = ../libcsvstate.la
 all: all-am
 
 .SUFFIXES:

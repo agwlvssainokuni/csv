@@ -15,4 +15,5 @@
 noinst_PROGRAMS = sample
 sample_SOURCES = main.c
 
-AM_LDFLAGS = -L.. -lcsvstate
+AM_CFLAGS = -I..
+AM_LDFLAGS = ../libcsvstate.la
