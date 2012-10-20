@@ -81,10 +81,6 @@ static VALUE read_record(VALUE io) {
 		if (CsvStateIsEndOfRecord(&state)) {
 			break;
 		}
-
-		if (ch == Qnil) {
-			break;
-		}
 	}
 
 	return record;
