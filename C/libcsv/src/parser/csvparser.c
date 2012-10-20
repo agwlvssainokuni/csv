@@ -113,7 +113,7 @@ apr_status_t CsvParserReadRecord(
 
 		// (9) 1レコード読込んだら、ループを終了する。
 		if (CsvStateIsEndOfRecord(&csvstate)) {
-			if (APR_STATUS_IS_EOF(status)) {
+			if (NULL == (*record) && APR_STATUS_IS_EOF(status)) {
 				result = status;
 			}
 			break;
