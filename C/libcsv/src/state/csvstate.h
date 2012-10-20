@@ -31,7 +31,9 @@ extern "C" {
 #endif
 
 typedef struct _CsvState {
-	enum { CSV_NONE, CSV_APPEND, CSV_FLUSH, CSV_ERROR } action;
+	enum {
+		CSV_NONE, CSV_APPEND, CSV_FLUSH, CSV_ERROR
+	} action;
 	void (*handler)(struct _CsvState*, int);
 } CsvState;
 

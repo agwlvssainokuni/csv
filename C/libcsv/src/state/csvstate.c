@@ -46,7 +46,7 @@ void CsvStateNext(CsvState* state, int ch) {
 /*
  * レコード終端判定。
  */
-int CsvStateIsEndOfRecord(CsvState*  state) {
+int CsvStateIsEndOfRecord(CsvState* state) {
 	return state->handler == state_RECORD_END;
 }
 

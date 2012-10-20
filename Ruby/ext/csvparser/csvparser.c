@@ -160,8 +160,7 @@ static VALUE csvparser_each(VALUE obj) {
 /**
  * モジュール初期化。
  */
-void Init_csvparser()
-{
+void Init_csvparser() {
 
 	id_io = rb_intern("io");
 	id_getc = rb_intern("getc");
