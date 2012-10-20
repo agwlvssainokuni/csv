@@ -48,11 +48,11 @@ int read_record(FILE* fp) {
 
 	CsvState state;
 	int num_of_fields = 0;
-	int label_flag = 1;
+	int record_label = 1;
+	int field_label = 1;
 
 	CsvStateInitialize(&state);
 
-	fprintf(stdout, "{record}\n");
 	while (1) {
 
 		int ch = fgetc(fp);
@@ -60,27 +60,38 @@ int read_record(FILE* fp) {
 
 		switch (state.action) {
 		case CSV_APPEND:
-			if (label_flag) {
-				fprintf(stdout, "{field}");
-				label_flag = 0;
+			if (record_label) {
+				fprintf(stdout, "<R>");
+				record_label = 0;
+			}
+			if (field_label) {
+				fprintf(stdout, "<F>");
+				field_label = 0;
 			}
 			fputc(ch, stdout);
 			break;
 		case CSV_FLUSH:
-			fprintf(stdout, "{/field}\n");
+			if (record_label) {
+				fprintf(stdout, "<R>");
+				record_label = 0;
+			}
+			if (field_label) {
+				fprintf(stdout, "<F>");
+				field_label = 0;
+			}
+			fprintf(stdout, "</F>");
 			num_of_fields += 1;
-			label_flag = 1;
+			field_label = 1;
 			break;
 		case CSV_ERROR:
-			fprintf(stderr, "\nfailed to parse\n");
+			fprintf(stderr, "error: Invalid CSV format\n");
 			return -1;
 		}
 
 		if (CsvStateIsEndOfRecord(&state)) {
-			break;
-		}
-
-		if (ch == EOF) {
+			if (record_label == 0) {
+				fprintf(stdout, "</R>");
+			}
 			break;
 		}
 	}
