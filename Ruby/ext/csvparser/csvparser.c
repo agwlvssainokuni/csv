@@ -90,7 +90,7 @@ static VALUE read_record(VALUE io) {
  * CSVパーサオブジェクト生成。
  */
 static VALUE csvparser_initialize(VALUE obj, VALUE io) {
-	rb_ivar_set(obj, id_io, io);
+	return rb_ivar_set(obj, id_io, io);
 }
 
 /**
