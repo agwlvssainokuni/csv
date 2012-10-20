@@ -39,7 +39,6 @@ static VALUE read_record(VALUE io) {
 
 		VALUE ch = rb_funcall(io, id_getc, 0);
 
-		int i;
 		unsigned char ary[1];
 		unsigned char* str_ptr = NULL;
 		long str_len = 0L;
@@ -69,6 +68,7 @@ static VALUE read_record(VALUE io) {
 
 		if (CSV_APPEND == state.action) {
 
+			int i;
 			for (i = 0; i < str_len; i++) {
 				fld_buff[fld_buff_len++] = str_ptr[i];
 			}
