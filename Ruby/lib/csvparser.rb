@@ -35,7 +35,7 @@ class CsvParser
 				record << field
 				field = ""
 			when :ERROR
-				raise CsvError, "failed to parse"
+				raise CsvError, "Invalid CSV format"
 			end
 			state = trans[:state]
 		end

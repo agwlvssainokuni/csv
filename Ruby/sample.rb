@@ -17,42 +17,14 @@
 
 require './csvparser'
 
-puts "CsvParser#read"
 File.open(ARGV[0]) {|io|
-	csv = CsvParser.new(io)
-	until (r = csv.read).nil?
-		puts "<record>"
-		r.each {|f| puts "<field>#{f}</field>" }
-		puts "</record>"
+	begin
+		CsvParser.new(io).each {|r|
+			print "<R>"
+			r.each {|f| print "<F>#{f}</F>" }
+			print "</R>"
+		}
+	rescue CsvError => ex
+		STDERR.puts "error: #{ex.message}"
 	end
-}
-
-puts
-puts "CsvParser#read_records"
-File.open(ARGV[0]) {|io|
-	CsvParser.new(io).read_records.each {|r|
-		puts "<record>"
-		r.each {|f| puts "<field>#{f}</field>" }
-		puts "</record>"
-	}
-}
-
-puts
-puts "CsvParser#each"
-File.open(ARGV[0]) {|io|
-	CsvParser.new(io).each {|r|
-		puts "<record>"
-		r.each {|f| puts "<field>#{f}</field>" }
-		puts "</record>"
-	}
-}
-
-puts
-puts "CsvParser#each_records"
-File.open(ARGV[0]) {|io|
-	CsvParser.new(io).each_records {|r|
-		puts "<record>"
-		r.each {|f| puts "<field>#{f}</field>" }
-		puts "</record>"
-	}
 }

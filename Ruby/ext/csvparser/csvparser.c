@@ -74,7 +74,7 @@ static VALUE read_record(VALUE io) {
 			field = rb_str_new(0, 0);
 			break;
 		case CSV_ERROR:
-			rb_raise(rb_eCsvError, "failed to parse");
+			rb_raise(rb_eCsvError, "Invalid CSV format");
 			return Qnil;
 		}
 
