@@ -27,18 +27,18 @@ main([ARGV]) ->
 each_record(Fun, Arg) ->
 	case csvparser:read(Fun, Arg) of
 		{ok, R, Arg2} ->
-			io:format("<record>\n"),
+			io:format("<R>"),
 			print_field(R),
-			io:format("</record>\n"),
+			io:format("</R>"),
 			each_record(Fun, Arg2);
 		{eof, Arg2} ->
 			{eof, Arg2};
 		Other ->
-			io:format("failed to parse: ~p~n", [Other])
+			io:format("error: Invalid CSV format: ~p~n", [Other])
 	end.
 
 print_field([F|R]) ->
-	io:format("<field>~s</field>~n", [F]),
+	io:format("<F>~s</F>", [F]),
 	print_field(R);
 print_field([]) ->
 	ok.
