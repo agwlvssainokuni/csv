@@ -79,7 +79,7 @@ read(Fun, Arg, F, R, state_NONESCAPED) ->
 				state_FIELD_BEGIN);
 		{ok, "\"", Arg2} -> read(Fun, Arg2, F, R, $",
 				action_APPEND,
-				state_ESCAPED);
+				state_NONESCAPED);
 		{ok, "\r", Arg2} -> read(Fun, Arg2, F, R, $\r,
 				action_FLUSH,
 				state_CR);
