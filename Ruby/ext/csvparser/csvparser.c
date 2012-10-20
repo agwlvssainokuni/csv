@@ -20,13 +20,17 @@
 static VALUE rb_cCsvParser, rb_eCsvError;
 static ID id_io, id_getc;
 
+#define FIELD_BUFFER_LENGTH 1024
+
 /**
  * IOオブジェクトから、CSVレコードを読取る。
  */
 static VALUE read_record(VALUE io) {
 
-	VALUE field = rb_str_new(0, 0);
+	VALUE field = Qnil;
 	VALUE record = Qnil;
+	unsigned char fld_buff[FIELD_BUFFER_LENGTH];
+	int fld_buff_len = 0;
 	CsvState state;
 
 	CsvStateInitialize(&state);
@@ -35,6 +39,7 @@ static VALUE read_record(VALUE io) {
 
 		VALUE ch = rb_funcall(io, id_getc, 0);
 
+		int i;
 		unsigned char ary[1];
 		unsigned char* str_ptr = NULL;
 		long str_len = 0L;
@@ -62,20 +67,40 @@ static VALUE read_record(VALUE io) {
 		}
 		CsvStateNext(&state, ich);
 
-		switch (state.action) {
-		case CSV_APPEND:
-			rb_str_cat(field, str_ptr, str_len);
-			break;
-		case CSV_FLUSH:
+		if (CSV_APPEND == state.action) {
+
+			for (i = 0; i < str_len; i++) {
+				fld_buff[fld_buff_len++] = str_ptr[i];
+			}
+
+			if (fld_buff_len > FIELD_BUFFER_LENGTH - 3) {
+				if (field == Qnil) {
+					field = rb_str_new(fld_buff, fld_buff_len);
+				} else {
+					rb_str_cat(field, fld_buff, fld_buff_len);
+				}
+				fld_buff_len = 0;
+			}
+		} else if (CSV_FLUSH == state.action) {
+
+			if (field == Qnil) {
+				field = rb_str_new(fld_buff, fld_buff_len);
+			} else {
+				rb_str_cat(field, fld_buff, fld_buff_len);
+			}
+			fld_buff_len = 0;
+
 			if (record == Qnil) {
 				record = rb_ary_new();
 			}
+
 			rb_ary_push(record, field);
-			field = rb_str_new(0, 0);
-			break;
-		case CSV_ERROR:
+			field = Qnil;
+		} else if (CSV_ERROR == state.action) {
 			rb_raise(rb_eCsvError, "Invalid CSV format");
 			return Qnil;
+		} else {
+			// 何もしない。
 		}
 
 		if (CsvStateIsEndOfRecord(&state)) {
