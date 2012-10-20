@@ -50,12 +50,12 @@ int main(int argc, char** argv) {
 		status = CsvParserReadRecord(file, &record, pool);
 		if (APR_SUCCESS == status) {
 			int i;
-			fprintf(stdout, "<record>\n");
+			fprintf(stdout, "<R>");
 			for (i = 0; i < record->nelts; i++) {
-				fprintf(stdout, "<field>%s</field>\n",
+				fprintf(stdout, "<F>%s</F>",
 					APR_ARRAY_IDX(record, i, unsigned char*));
 			}
-			fprintf(stdout, "</record>\n");
+			fprintf(stdout, "</R>");
 		} else if (APR_STATUS_IS_EOF(status)) {
 			break;
 		} else {
