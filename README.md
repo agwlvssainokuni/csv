@@ -24,6 +24,10 @@ CSVパーサ
   * OS: Ubuntu Server 12.04.1 LTS
   * CPU: Core i5 2.3GHz * 2 (VMware Player)
   * MEM: 2GB
+* Java
+  * real    0m11.684s
+  * user    0m9.397s
+  * sys     0m2.556s
 * C言語
   * 状態遷移機械
     * real    0m1.504s
