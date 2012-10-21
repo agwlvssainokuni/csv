@@ -48,6 +48,11 @@ CSVパーサ
     * user    0m56.880s
     * sys     0m0.116s
 * Erlang
-  * real    4m4.105s
-  * user    3m55.159s
-  * sys     0m8.273s
+  * インタプリタ実行
+    * real    4m4.105s
+    * user    3m55.159s
+    * sys     0m8.273s
+  * コンパイル実行 (escript -c)
+    * real    3m8.216s
+    * user    3m0.847s
+    * sys     0m6.912s
