@@ -39,13 +39,13 @@ static VALUE read_record(VALUE io) {
 
 		VALUE ch = rb_funcall(io, id_getc, 0);
 
-		unsigned char ary[1];
+		unsigned char ch_val;
 		unsigned char* str_ptr = NULL;
 		long str_len = 0L;
 		if (FIXNUM_P(ch)) {
 			/* Ruby 1.8 (getc returns Integer) */
-			ary[0] = (unsigned char) FIX2INT(ch);
-			str_ptr = ary;
+			ch_val = (unsigned char) FIX2INT(ch);
+			str_ptr = &ch_val;
 			str_len = 1L;
 		} else if (TYPE(ch) == T_STRING) {
 			/* Ruby 1.9 (getc returns String) */
