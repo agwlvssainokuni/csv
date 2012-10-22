@@ -35,9 +35,13 @@ CSVパーサ
     * sys     0m0.052s
     * 表示のみ (フィールド＆レコードのメモリ割当なし)
   * パーサ (APR版)
-    * real    0m11.895s
-    * user    0m2.764s
-    * sys     0m9.045s
+    * real    0m2.820s
+    * user    0m2.752s
+    * sys     0m0.036s
+    * ファイルバッファなしだと
+      * real    0m11.895s
+      * user    0m2.764s
+      * sys     0m9.045s
 * Ruby
   * 拡張ライブラリ版
     * real    0m9.287s
