@@ -27,6 +27,7 @@ apr_status_t CsvParserReadRecord(
 	apr_pool_t* pool) {
 
 	apr_status_t status, result;
+	apr_array_header_t* record_ptr = NULL;
 	apr_pool_t* fld_pool = NULL;
 	unsigned char* fld_temp = NULL;
 	unsigned char fld_buff[FIELD_BUFFER_LENGTH];
@@ -35,10 +36,8 @@ apr_status_t CsvParserReadRecord(
 
 	// (1) 初期化する。
 	// ・終了ステータスをAPR_SUCCESSに初期化
-	// ・結果配列をNULLに初期化
 	// ・CSV状態遷移機械を初期化
 	result = APR_SUCCESS;
-	(*record) = NULL;
 	CsvStateInitialize(&csvstate);
 
 	// (2) 子プールを作成する。
@@ -94,12 +93,12 @@ apr_status_t CsvParserReadRecord(
 			}
 			fld_buff_len = 0;
 
-			if (NULL == (*record)) {
-				(*record) = apr_array_make(pool,
+			if (NULL == record_ptr) {
+				record_ptr = apr_array_make(pool,
 					INITIAL_RECORD_NALLOC, sizeof(unsigned char*));
 			}
 
-			APR_ARRAY_PUSH((*record), unsigned char*) = fld_temp;
+			APR_ARRAY_PUSH(record_ptr, unsigned char*) = fld_temp;
 			fld_temp = NULL;
 		} else if (CSV_ERROR == csvstate.action) {
 
@@ -113,8 +112,10 @@ apr_status_t CsvParserReadRecord(
 
 		// (9) 1レコード読込んだら、ループを終了する。
 		if (CsvStateIsEndOfRecord(&csvstate)) {
-			if (NULL == (*record) && APR_STATUS_IS_EOF(status)) {
-				result = status;
+			if (NULL != record_ptr) {
+				(*record) = record_ptr;
+			} else {
+				result = APR_EOF;
 			}
 			break;
 		}
