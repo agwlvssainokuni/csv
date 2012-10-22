@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
 	apr_status_t status;
 	apr_file_t* file;
 	apr_pool_t* pool;
+	apr_pool_t* record_pool;
 	apr_array_header_t* record;
 	char error_msg[1024];
 
@@ -40,14 +41,21 @@ int main(int argc, char** argv) {
 		goto POOL_TERMINATE;
 	}
 
-	status = apr_file_open(&file, argv[1], APR_READ, APR_OS_DEFAULT, pool);
+	status = apr_pool_create(&record_pool, pool);
+	if (APR_SUCCESS != status) {
+		goto POOL_DESTROY;
+	}
+
+	status = apr_file_open(&file, argv[1],
+		APR_READ | APR_BUFFERED,
+		APR_OS_DEFAULT, pool);
 	if (APR_SUCCESS != status) {
 		goto POOL_DESTROY;
 	}
 
 	while (1) {
 
-		status = CsvParserReadRecord(file, &record, pool);
+		status = CsvParserReadRecord(file, &record, record_pool);
 		if (APR_SUCCESS == status) {
 			int i;
 			fprintf(stdout, "<R>");
@@ -56,6 +64,7 @@ int main(int argc, char** argv) {
 					APR_ARRAY_IDX(record, i, unsigned char*));
 			}
 			fprintf(stdout, "</R>");
+			apr_pool_clear(record_pool);
 		} else if (APR_STATUS_IS_EOF(status)) {
 			break;
 		} else {
