@@ -39,14 +39,12 @@
 						(set! field (open-output-string)))
 					((ERROR)
 						(raise (condition
-							(<error> (message "Invalid CSV format")))))
-					)
+							(<error> (message "Invalid CSV format"))))))
 				(set! state (cadr trans))
 			))
 		(close-output-port field)
 		record
-	)
-)
+	))
 
 (define (RECORD_BEGIN ch)
 	(case ch
