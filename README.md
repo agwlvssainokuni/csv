@@ -16,6 +16,9 @@ CSVパーサ
   * C言語版の状態遷移機械を使用した拡張ライブラリ。
   * ピュアRuby版CSVパーサ。
 * Erlang
+* Scheme
+  * R5RS + SRFI-6 の機能を使用してパーサ実装。
+    * 処理系にはGaucheを選択して確認。
 
 サンプルで性能測定
 ------------------
@@ -60,3 +63,8 @@ CSVパーサ
     * real    3m8.216s
     * user    3m0.847s
     * sys     0m6.912s
+* Scheme (R5RS + SRFI-6)
+  * Gauche (R5RS + SRFI-6)
+    * real    0m18.738s
+    * user    0m18.645s
+    * sys     0m0.048s
