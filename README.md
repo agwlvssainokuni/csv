@@ -19,6 +19,9 @@ CSVパーサ
 * Scheme
   * R5RS + SRFI-6 の機能を使用してパーサ実装。
     * 処理系にはGaucheを選択して確認。
+* JavaScript
+  * CSVパーサ本体はプラットフォーム非依存。
+    * サンプルはjrunscript (Javaのスクリプトエンジン) 前提。
 
 サンプルで性能測定
 ------------------
@@ -68,3 +71,8 @@ CSVパーサ
     * real    0m18.738s
     * user    0m18.645s
     * sys     0m0.048s
+* JavaScript
+  * jrunscript (Java 7; OpenJDK, 64-Bit Server VM)
+    * real    4m57.689s
+    * user    4m46.290s
+    * sys     0m14.765s
