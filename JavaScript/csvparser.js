@@ -61,7 +61,7 @@ CsvParser.prototype = {
 			return {action: this.FLUSH,		state: this.CR};
 		case "\n":
 			return {action: this.FLUSH,		state: this.RECORD_END};
-		case -1:
+		case null:
 			return {action: this.NONE,		state: this.RECORD_END};
 		default:
 			return {action: this.APPEND,	state: this.NONESCAPED};
@@ -78,7 +78,7 @@ CsvParser.prototype = {
 			return {action: this.FLUSH,		state: this.CR};
 		case "\n":
 			return {action: this.FLUSH,		state: this.RECORD_END};
-		case -1:
+		case null:
 			return {action: this.FLUSH,		state: this.RECORD_END};
 		default:
 			return {action: this.APPEND,	state: this.NONESCAPED};
@@ -95,7 +95,7 @@ CsvParser.prototype = {
 			return {action: this.FLUSH,		state: this.CR};
 		case "\n":
 			return {action: this.FLUSH,		state: this.RECORD_END};
-		case -1:
+		case null:
 			return {action: this.FLUSH,		state: this.RECORD_END};
 		default:
 			return {action: this.APPEND,	state: this.NONESCAPED};
@@ -112,7 +112,7 @@ CsvParser.prototype = {
 			return {action: this.APPEND,	state: this.ESCAPED};
 		case "\n":
 			return {action: this.APPEND,	state: this.ESCAPED};
-		case -1:
+		case null:
 			return {action: this.ERROR,		state: null};
 		default:
 			return {action: this.APPEND,	state: this.ESCAPED};
@@ -129,7 +129,7 @@ CsvParser.prototype = {
 			return {action: this.FLUSH,		state: this.CR};
 		case "\n":
 			return {action: this.FLUSH,		state: this.RECORD_END};
-		case -1:
+		case null:
 			return {action: this.FLUSH,		state: this.RECORD_END};
 		default:
 			return {action: this.ERROR,		state: null};
@@ -146,7 +146,7 @@ CsvParser.prototype = {
 			return {action: this.NONE,		state: this.CR};
 		case "\n":
 			return {action: this.NONE,		state: this.RECORD_END};
-		case -1:
+		case null:
 			return {action: this.NONE,		state: this.RECORD_END};
 		default:
 			return {action: this.ERROR,		state: null};
