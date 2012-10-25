@@ -18,31 +18,31 @@
 (use csvparser)
 
 (define (main args) 
-	(let
-		((err (current-error-port)))
-		(guard (ex
-				((condition-has-type? ex <system-error>)
-					(format err "error: ~A\n" (slot-ref ex 'message)))
-				(else
-					(format err "error: ~A\n" (slot-ref ex 'message))))
-			(call-with-input-file (cadr args) main-loop))
-	))
+  (let
+      ((err (current-error-port)))
+    (guard (ex
+	    ((condition-has-type? ex <system-error>)
+	     (format err "error: ~A\n" (slot-ref ex 'message)))
+	    (else
+	     (format err "error: ~A\n" (slot-ref ex 'message))))
+	   (call-with-input-file (cadr args) main-loop))
+    ))
 
 (define (main-loop port)
-	(let
-		((eof #f)
-		 (record #f))
-		(until eof
-			(set! record (read-record port))
-			(if record
-				(begin
-					(display "<R>")
-					(for-each
-						(lambda (field)
-							(display "<F>")
-							(display field)
-							(display "</F>"))
-						record)
-					(display "</R>"))
-				(set! eof #t)))
-	))
+  (let
+      ((eof #f)
+       (record #f))
+    (until eof
+	   (set! record (read-record port))
+	   (if record
+	       (begin
+		 (display "<R>")
+		 (for-each
+		  (lambda (field)
+		    (display "<F>")
+		    (display field)
+		    (display "</F>"))
+		  record)
+		 (display "</R>"))
+	       (set! eof #t)))
+    ))
