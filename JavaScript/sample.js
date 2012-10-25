@@ -24,7 +24,9 @@ function main(args) {
 
 		var getchar = function() {
 			var ch = reader.read();
-			if (ch < 0) { return null; }
+			if (ch < 0) {
+				return null;
+			}
 			return String.fromCharCode(ch);
 		};
 
@@ -32,7 +34,7 @@ function main(args) {
 		var record;
 		while ((record = parser.read_record()) != null) {
 			print("<R>");
-			for (var i = 0; i < record.length; i++) {
+			for ( var i = 0; i < record.length; i++) {
 				print("<F>");
 				print(record[i]);
 				print("</F>");

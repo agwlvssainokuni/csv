@@ -54,102 +54,102 @@ CsvParser.prototype = {
 	RECORD_BEGIN : function(ch) {
 		switch (ch) {
 		case ",":
-			return [this.FLUSH,		this.FIELD_BEGIN];
+			return [ this.FLUSH, this.FIELD_BEGIN ];
 		case "\"":
-			return [this.NONE,		this.ESCAPED];
+			return [ this.NONE, this.ESCAPED ];
 		case "\r":
-			return [this.FLUSH,		this.CR];
+			return [ this.FLUSH, this.CR ];
 		case "\n":
-			return [this.FLUSH,		this.RECORD_END];
+			return [ this.FLUSH, this.RECORD_END ];
 		case null:
-			return [this.NONE,		this.RECORD_END];
+			return [ this.NONE, this.RECORD_END ];
 		default:
-			return [this.APPEND,	this.NONESCAPED];
+			return [ this.APPEND, this.NONESCAPED ];
 		}
 	},
 
 	FIELD_BEGIN : function(ch) {
 		switch (ch) {
 		case ",":
-			return [this.FLUSH,		this.FIELD_BEGIN];
+			return [ this.FLUSH, this.FIELD_BEGIN ];
 		case "\"":
-			return [this.NONE,		this.ESCAPED];
+			return [ this.NONE, this.ESCAPED ];
 		case "\r":
-			return [this.FLUSH,		this.CR];
+			return [ this.FLUSH, this.CR ];
 		case "\n":
-			return [this.FLUSH,		this.RECORD_END];
+			return [ this.FLUSH, this.RECORD_END ];
 		case null:
-			return [this.FLUSH,		this.RECORD_END];
+			return [ this.FLUSH, this.RECORD_END ];
 		default:
-			return [this.APPEND,	this.NONESCAPED];
+			return [ this.APPEND, this.NONESCAPED ];
 		}
 	},
 
 	NONESCAPED : function(ch) {
 		switch (ch) {
 		case ",":
-			return [this.FLUSH,		this.FIELD_BEGIN];
+			return [ this.FLUSH, this.FIELD_BEGIN ];
 		case "\"":
-			return [this.APPEND,	this.NONESCAPED];
+			return [ this.APPEND, this.NONESCAPED ];
 		case "\r":
-			return [this.FLUSH,		this.CR];
+			return [ this.FLUSH, this.CR ];
 		case "\n":
-			return [this.FLUSH,		this.RECORD_END];
+			return [ this.FLUSH, this.RECORD_END ];
 		case null:
-			return [this.FLUSH,		this.RECORD_END];
+			return [ this.FLUSH, this.RECORD_END ];
 		default:
-			return [this.APPEND,	this.NONESCAPED];
+			return [ this.APPEND, this.NONESCAPED ];
 		}
 	},
 
 	ESCAPED : function(ch) {
 		switch (ch) {
 		case ",":
-			return [this.APPEND,	this.ESCAPED];
+			return [ this.APPEND, this.ESCAPED ];
 		case "\"":
-			return [this.NONE,		this.DQUOTE];
+			return [ this.NONE, this.DQUOTE ];
 		case "\r":
-			return [this.APPEND,	this.ESCAPED];
+			return [ this.APPEND, this.ESCAPED ];
 		case "\n":
-			return [this.APPEND,	this.ESCAPED];
+			return [ this.APPEND, this.ESCAPED ];
 		case null:
-			return [this.ERROR,		null];
+			return [ this.ERROR, null ];
 		default:
-			return [this.APPEND,	this.ESCAPED];
+			return [ this.APPEND, this.ESCAPED ];
 		}
 	},
 
 	DQUOTE : function(ch) {
 		switch (ch) {
 		case ",":
-			return [this.FLUSH,		this.FIELD_BEGIN];
+			return [ this.FLUSH, this.FIELD_BEGIN ];
 		case "\"":
-			return [this.APPEND,	this.ESCAPED];
+			return [ this.APPEND, this.ESCAPED ];
 		case "\r":
-			return [this.FLUSH,		this.CR];
+			return [ this.FLUSH, this.CR ];
 		case "\n":
-			return [this.FLUSH,		this.RECORD_END];
+			return [ this.FLUSH, this.RECORD_END ];
 		case null:
-			return [this.FLUSH,		this.RECORD_END];
+			return [ this.FLUSH, this.RECORD_END ];
 		default:
-			return [this.ERROR,		null];
+			return [ this.ERROR, null ];
 		}
 	},
 
 	CR : function(ch) {
 		switch (ch) {
 		case ",":
-			return [this.ERROR,		null];
+			return [ this.ERROR, null ];
 		case "\"":
-			return [this.ERROR,		null];
+			return [ this.ERROR, null ];
 		case "\r":
-			return [this.NONE,		this.CR];
+			return [ this.NONE, this.CR ];
 		case "\n":
-			return [this.NONE,		this.RECORD_END];
+			return [ this.NONE, this.RECORD_END ];
 		case null:
-			return [this.NONE,		this.RECORD_END];
+			return [ this.NONE, this.RECORD_END ];
 		default:
-			return [this.ERROR,		null];
+			return [ this.ERROR, null ];
 		}
 	},
 
