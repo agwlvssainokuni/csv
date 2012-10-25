@@ -27,7 +27,7 @@ CsvParser.prototype = {
 		while (state != this.RECORD_END) {
 			var ch = this.getchar();
 			var trans = state.call(this, ch);
-			switch (trans.action) {
+			switch (trans[0]) {
 			case this.APPEND:
 				field = field.concat(ch);
 				break;
@@ -41,7 +41,7 @@ CsvParser.prototype = {
 			case this.ERROR:
 				throw "Invalid CSV format";
 			}
-			state = trans.state;
+			state = trans[1];
 		}
 		return record;
 	},
@@ -54,102 +54,102 @@ CsvParser.prototype = {
 	RECORD_BEGIN : function(ch) {
 		switch (ch) {
 		case ",":
-			return {action: this.FLUSH,		state: this.FIELD_BEGIN};
+			return [this.FLUSH,		this.FIELD_BEGIN];
 		case "\"":
-			return {action: this.NONE,		state: this.ESCAPED};
+			return [this.NONE,		this.ESCAPED];
 		case "\r":
-			return {action: this.FLUSH,		state: this.CR};
+			return [this.FLUSH,		this.CR];
 		case "\n":
-			return {action: this.FLUSH,		state: this.RECORD_END};
+			return [this.FLUSH,		this.RECORD_END];
 		case null:
-			return {action: this.NONE,		state: this.RECORD_END};
+			return [this.NONE,		this.RECORD_END];
 		default:
-			return {action: this.APPEND,	state: this.NONESCAPED};
+			return [this.APPEND,	this.NONESCAPED];
 		}
 	},
 
 	FIELD_BEGIN : function(ch) {
 		switch (ch) {
 		case ",":
-			return {action: this.FLUSH,		state: this.FIELD_BEGIN};
+			return [this.FLUSH,		this.FIELD_BEGIN];
 		case "\"":
-			return {action: this.NONE,		state: this.ESCAPED};
+			return [this.NONE,		this.ESCAPED];
 		case "\r":
-			return {action: this.FLUSH,		state: this.CR};
+			return [this.FLUSH,		this.CR];
 		case "\n":
-			return {action: this.FLUSH,		state: this.RECORD_END};
+			return [this.FLUSH,		this.RECORD_END];
 		case null:
-			return {action: this.FLUSH,		state: this.RECORD_END};
+			return [this.FLUSH,		this.RECORD_END];
 		default:
-			return {action: this.APPEND,	state: this.NONESCAPED};
+			return [this.APPEND,	this.NONESCAPED];
 		}
 	},
 
 	NONESCAPED : function(ch) {
 		switch (ch) {
 		case ",":
-			return {action: this.FLUSH,		state: this.FIELD_BEGIN};
+			return [this.FLUSH,		this.FIELD_BEGIN];
 		case "\"":
-			return {action: this.APPEND,	state: this.NONESCAPED};
+			return [this.APPEND,	this.NONESCAPED];
 		case "\r":
-			return {action: this.FLUSH,		state: this.CR};
+			return [this.FLUSH,		this.CR];
 		case "\n":
-			return {action: this.FLUSH,		state: this.RECORD_END};
+			return [this.FLUSH,		this.RECORD_END];
 		case null:
-			return {action: this.FLUSH,		state: this.RECORD_END};
+			return [this.FLUSH,		this.RECORD_END];
 		default:
-			return {action: this.APPEND,	state: this.NONESCAPED};
+			return [this.APPEND,	this.NONESCAPED];
 		}
 	},
 
 	ESCAPED : function(ch) {
 		switch (ch) {
 		case ",":
-			return {action: this.APPEND,	state: this.ESCAPED};
+			return [this.APPEND,	this.ESCAPED];
 		case "\"":
-			return {action: this.NONE,		state: this.DQUOTE};
+			return [this.NONE,		this.DQUOTE];
 		case "\r":
-			return {action: this.APPEND,	state: this.ESCAPED};
+			return [this.APPEND,	this.ESCAPED];
 		case "\n":
-			return {action: this.APPEND,	state: this.ESCAPED};
+			return [this.APPEND,	this.ESCAPED];
 		case null:
-			return {action: this.ERROR,		state: null};
+			return [this.ERROR,		null];
 		default:
-			return {action: this.APPEND,	state: this.ESCAPED};
+			return [this.APPEND,	this.ESCAPED];
 		}
 	},
 
 	DQUOTE : function(ch) {
 		switch (ch) {
 		case ",":
-			return {action: this.FLUSH,		state: this.FIELD_BEGIN};
+			return [this.FLUSH,		this.FIELD_BEGIN];
 		case "\"":
-			return {action: this.APPEND,	state: this.ESCAPED};
+			return [this.APPEND,	this.ESCAPED];
 		case "\r":
-			return {action: this.FLUSH,		state: this.CR};
+			return [this.FLUSH,		this.CR];
 		case "\n":
-			return {action: this.FLUSH,		state: this.RECORD_END};
+			return [this.FLUSH,		this.RECORD_END];
 		case null:
-			return {action: this.FLUSH,		state: this.RECORD_END};
+			return [this.FLUSH,		this.RECORD_END];
 		default:
-			return {action: this.ERROR,		state: null};
+			return [this.ERROR,		null];
 		}
 	},
 
 	CR : function(ch) {
 		switch (ch) {
 		case ",":
-			return {action: this.ERROR,		state: null};
+			return [this.ERROR,		null];
 		case "\"":
-			return {action: this.ERROR,		state: null};
+			return [this.ERROR,		null];
 		case "\r":
-			return {action: this.NONE,		state: this.CR};
+			return [this.NONE,		this.CR];
 		case "\n":
-			return {action: this.NONE,		state: this.RECORD_END};
+			return [this.NONE,		this.RECORD_END];
 		case null:
-			return {action: this.NONE,		state: this.RECORD_END};
+			return [this.NONE,		this.RECORD_END];
 		default:
-			return {action: this.ERROR,		state: null};
+			return [this.ERROR,		null];
 		}
 	},
 
