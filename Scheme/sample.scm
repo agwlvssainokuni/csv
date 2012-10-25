@@ -37,11 +37,12 @@
 			(if record
 				(begin
 					(display "<R>")
-					(while (pair? record)
-						(display "<F>")
-						(display (car record))
-						(display "</F>")
-						(set! record (cdr record)))
+					(for-each
+						(lambda (field)
+							(display "<F>")
+							(display field)
+							(display "</F>"))
+						record)
 					(display "</R>"))
 				(set! eof #t)))
 	))
