@@ -21,7 +21,7 @@
   (let
       ((err (current-error-port)))
     (guard (ex
-	    ((condition-has-type? ex <system-error>)
+	    ((condition-has-type? ex <csv-error>)
 	     (format err "error: ~A\n" (slot-ref ex 'message)))
 	    (else
 	     (format err "error: ~A\n" (slot-ref ex 'message))))

@@ -15,8 +15,10 @@
 ;;
 
 (define-module csvparser
-  (export read-record))
+  (export read-record <csv-error>))
 (select-module csvparser)
+
+(define-class <csv-error> (<error>) ())
 
 (define (read-record port)
   (let
@@ -39,7 +41,7 @@
 		(set! field (open-output-string)))
 	       ((ERROR)
 		(raise (condition
-			(<error> (message "Invalid CSV format"))))))
+			(<csv-error> (message "Invalid CSV format"))))))
 	     (set! state (cadr trans))
 	     ))
     (close-output-port field)
