@@ -1,5 +1,5 @@
 ;;
-;; Copyright 2012 Norio Agawa
+;; Copyright 2012 agwlvssainokuni
 ;;
 ;; Licensed under the Apache License, Version 2.0 (the "License");
 ;; you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
 ;;
 
 (define-module csvparser
-  (export read-record))
+  (export read-record <csv-error>))
 (select-module csvparser)
+
+(define-class <csv-error> (<error>) ())
 
 (define (read-record port)
   (let
@@ -39,7 +41,7 @@
 		(set! field (open-output-string)))
 	       ((ERROR)
 		(raise (condition
-			(<error> (message "Invalid CSV format"))))))
+			(<csv-error> (message "Invalid CSV format"))))))
 	     (set! state (cadr trans))
 	     ))
     (close-output-port field)
@@ -48,62 +50,62 @@
 
 (define (RECORD_BEGIN ch)
   (case ch
-    ((#\,)	`(FLUSH		,FIELD_BEGIN))
-    ((#\")	`(NONE		,ESCAPED))
-    ((#\CR)	`(FLUSH		,CR))
-    ((#\LF)	`(FLUSH		,RECORD_END))
-    ((EOF)	`(NONE		,RECORD_END))
-    (else	`(APPEND	,NONESCAPED))
+    ((#\,) `(FLUSH ,FIELD_BEGIN))
+    ((#\") `(NONE ,ESCAPED))
+    ((#\CR) `(FLUSH ,CR))
+    ((#\LF) `(FLUSH ,RECORD_END))
+    ((EOF) `(NONE ,RECORD_END))
+    (else `(APPEND ,NONESCAPED))
     ))
 
 (define (FIELD_BEGIN ch)
   (case ch
-    ((#\,)	`(FLUSH		,FIELD_BEGIN))
-    ((#\")	`(NONE		,ESCAPED))
-    ((#\CR)	`(FLUSH		,CR))
-    ((#\LF)	`(FLUSH		,RECORD_END))
-    ((EOF)	`(FLUSH		,RECORD_END))
-    (else	`(APPEND	,NONESCAPED))
+    ((#\,) `(FLUSH ,FIELD_BEGIN))
+    ((#\") `(NONE ,ESCAPED))
+    ((#\CR) `(FLUSH ,CR))
+    ((#\LF) `(FLUSH ,RECORD_END))
+    ((EOF) `(FLUSH ,RECORD_END))
+    (else `(APPEND ,NONESCAPED))
     ))
 
 (define (NONESCAPED ch)
   (case ch
-    ((#\,)	`(FLUSH		,FIELD_BEGIN))
-    ((#\")	`(APPEND	,NONESCAPED))
-    ((#\CR)	`(FLUSH		,CR))
-    ((#\LF)	`(FLUSH		,RECORD_END))
-    ((EOF)	`(FLUSH		,RECORD_END))
-    (else	`(APPEND	,NONESCAPED))
+    ((#\,) `(FLUSH ,FIELD_BEGIN))
+    ((#\") `(APPEND ,NONESCAPED))
+    ((#\CR) `(FLUSH ,CR))
+    ((#\LF) `(FLUSH ,RECORD_END))
+    ((EOF) `(FLUSH ,RECORD_END))
+    (else `(APPEND ,NONESCAPED))
     ))
 
 (define (ESCAPED ch)
   (case ch
-    ((#\,)	`(APPEND	,ESCAPED))
-    ((#\")	`(NONE		,DQUOTE))
-    ((#\CR)	`(APPEND	,ESCAPED))
-    ((#\LF)	`(APPEND	,ESCAPED))
-    ((EOF)	`(ERROR		()))
-    (else	`(APPEND	,ESCAPED))
+    ((#\,) `(APPEND ,ESCAPED))
+    ((#\") `(NONE ,DQUOTE))
+    ((#\CR) `(APPEND ,ESCAPED))
+    ((#\LF) `(APPEND ,ESCAPED))
+    ((EOF) `(ERROR ()))
+    (else `(APPEND ,ESCAPED))
     ))
 
 (define (DQUOTE ch)
   (case ch
-    ((#\,)	`(FLUSH		,FIELD_BEGIN))
-    ((#\")	`(APPEND	,ESCAPED))
-    ((#\CR)	`(FLUSH		,CR))
-    ((#\LF)	`(FLUSH		,RECORD_END))
-    ((EOF)	`(FLUSH		,RECORD_END))
-    (else	`(ERROR		()))
+    ((#\,) `(FLUSH ,FIELD_BEGIN))
+    ((#\") `(APPEND ,ESCAPED))
+    ((#\CR) `(FLUSH ,CR))
+    ((#\LF) `(FLUSH ,RECORD_END))
+    ((EOF) `(FLUSH ,RECORD_END))
+    (else `(ERROR ()))
     ))
 
 (define (CR ch)
   (case ch
-    ((#\,)	`(ERROR		()))
-    ((#\")	`(ERROR		()))
-    ((#\CR)	`(NONE		,CR))
-    ((#\LF)	`(NONE		,RECORD_END))
-    ((EOF)	`(NONE		,RECORD_END))
-    (else	`(ERROR		()))
+    ((#\,) `(ERROR ()))
+    ((#\") `(ERROR ()))
+    ((#\CR) `(NONE ,CR))
+    ((#\LF) `(NONE ,RECORD_END))
+    ((EOF) `(NONE ,RECORD_END))
+    (else `(ERROR ()))
     ))
 
 (define (RECORD_END ch) ())

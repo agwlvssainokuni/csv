@@ -1,6 +1,6 @@
 #!/usr/bin/gosh -I.
 ;;
-;; Copyright 2012 Norio Agawa
+;; Copyright 2012 agwlvssainokuni
 ;;
 ;; Licensed under the Apache License, Version 2.0 (the "License");
 ;; you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
   (let
       ((err (current-error-port)))
     (guard (ex
-	    ((condition-has-type? ex <system-error>)
+	    ((condition-has-type? ex <csv-error>)
 	     (format err "error: ~A\n" (slot-ref ex 'message)))
 	    (else
 	     (format err "error: ~A\n" (slot-ref ex 'message))))
