@@ -15,10 +15,11 @@
 ;;
 
 (define-module csvparser
-  (export read-record <csv-error>))
+  (export read-record csv-error? <csv-error>))
 (select-module csvparser)
 
-(define-class <csv-error> (<error>) ())
+(define-condition-type <csv-error> <error>
+  csv-error?)
 
 (define (read-record port)
   (let
