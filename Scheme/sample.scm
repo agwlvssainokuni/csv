@@ -18,8 +18,7 @@
 (use csvparser)
 
 (define (main args) 
-  (let
-      ((err (current-error-port)))
+  (let ((err (current-error-port)))
     (guard (ex
 	    ((csv-error? ex)
 	     (format err "error: ~A\n" (slot-ref ex 'message)))
@@ -29,20 +28,17 @@
     ))
 
 (define (main-loop port)
-  (let
-      ((eof #f)
-       (record #f))
-    (until eof
+  (let ((record ()))
+    (until (eof-object? record)
 	   (set! record (read-record port))
-	   (if record
-	       (begin
-		 (display "<R>")
-		 (for-each
-		  (lambda (field)
-		    (display "<F>")
-		    (display field)
-		    (display "</F>"))
-		  record)
-		 (display "</R>"))
-	       (set! eof #t)))
+	   (unless (eof-object? record)
+		   (display "<R>")
+		   (for-each
+		    (lambda (field)
+		      (display "<F>")
+		      (display field)
+		      (display "</F>"))
+		    record)
+		   (display "</R>")
+		   ))
     ))
