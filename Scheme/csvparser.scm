@@ -46,7 +46,7 @@
 	     (set! state (cadr trans))
 	     ))
     (close-output-port field)
-    record
+    (if record record (eof-object))
     ))
 
 (define (RECORD_BEGIN ch)

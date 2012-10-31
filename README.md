@@ -17,8 +17,8 @@ CSVパーサ
    * ピュアRuby版CSVパーサ。
 * Erlang
 * Scheme
-   * R5RS + SRFI-6 の機能を使用してパーサ実装。
-      * 処理系にはGaucheを選択して確認。
+   * 処理系にはGaucheを選択してパーサ実装。
+      * 出来るだけ標準機能の範囲で実装。ただし、他の処理系では未確認。
 * JavaScript
    * CSVパーサ本体はプラットフォーム非依存。
       * サンプルはjrunscript (Javaのスクリプトエンジン) 前提。
@@ -66,11 +66,15 @@ CSVパーサ
       * real    3m8.216s
       * user    3m0.847s
       * sys     0m6.912s
-* Scheme (R5RS + SRFI-6)
-   * Gauche (R5RS + SRFI-6)
+* Scheme (Gauche)
+   * 当パーサ
       * real    0m18.738s
       * user    0m18.645s
       * sys     0m0.048s
+      * 【参考】Gauche付属のCSVパーサ (text.csv) で測定
+         * real    0m34.315s
+         * user    0m34.142s
+         * sys     0m0.096s
 * JavaScript
    * jrunscript (Java 7; OpenJDK, 64-Bit Server VM)
       * real    4m57.689s

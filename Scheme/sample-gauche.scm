@@ -15,18 +15,19 @@
 ;; limitations under the License.
 ;;
 
-(use csvparser)
+(use text.csv)
 
 (define (main args) 
   (let ((err (current-error-port)))
     (guard (ex
-	    ((csv-error? ex)
+	    ((condition-has-type? ex <error>)
 	     (format err "error: ~A\n" (slot-ref ex 'message)))
 	    (else
 	     (format err "error: ~A\n" (slot-ref ex 'message))))
 	   (call-with-input-file (cadr args) main-loop))
     ))
 
+(define read-record  (make-csv-reader #\,))
 (define (main-loop port)
   (let ((record ()))
     (until (eof-object? record)
