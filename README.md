@@ -57,6 +57,10 @@ CSVパーサ
       * real    0m57.252s
       * user    0m56.880s
       * sys     0m0.116s
+      * 【参考】Ruby付属のCSVパーサ (csv) で測定
+         * real    0m17.409s
+         * user    0m17.265s
+         * sys     0m0.084s
 * Erlang
    * インタプリタ実行
       * real    4m4.105s
