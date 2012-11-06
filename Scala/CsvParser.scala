@@ -27,10 +27,10 @@ class CsvParser(reader: Reader) {
 
 	private def read_main(state: State,
 			field: StringBuilder,
-			record: List[String]): Array[String] = state match {
-		case RECORD_END =>
+			record: List[String]): Array[String] =
+		if (state == RECORD_END) {
 			if (record.isEmpty) null else record.reverse.toArray
-		case _ => {
+		} else {
 			val ch = reader.read()
 			val trans = state(ch)
 			trans.action match {
@@ -50,7 +50,6 @@ class CsvParser(reader: Reader) {
 					record)
 			}
 		}
-	}
 
 	private class Trans(act: Symbol, sta: State) {
 		val action: Symbol = act
