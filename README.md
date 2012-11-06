@@ -16,6 +16,7 @@ CSVパーサ
    * C言語版の状態遷移機械を使用した拡張ライブラリ。
    * ピュアRuby版CSVパーサ。
 * Erlang
+* Scala
 * Scheme
    * 処理系にはGaucheを選択してパーサ実装。
       * 出来るだけ標準機能の範囲で実装。ただし、他の処理系では未確認。
@@ -70,6 +71,11 @@ CSVパーサ
       * real    3m8.216s
       * user    3m0.847s
       * sys     0m6.912s
+* Scala
+   * コンパイル実行 (scalac Sample.scala CsvParser.scala して scala Sample)
+      * real    0m12.596s
+      * user    0m10.473s
+      * sys     0m2.464s
 * Scheme (Gauche)
    * 当パーサ
       * real    0m18.738s
