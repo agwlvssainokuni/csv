@@ -35,7 +35,7 @@ class CsvParser(reader: Reader) {
 			val trans = state(ch)
 			trans.action match {
 				case 'APPEND => read_main(trans.state,
-					field + ch.asInstanceOf[Char],
+					field + ch.toChar,
 					record)
 				case 'FLUSH => read_main(trans.state,
 					new StringBuilder,
