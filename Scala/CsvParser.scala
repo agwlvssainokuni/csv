@@ -18,7 +18,7 @@ import java.io.Reader
 
 class CsvException(message: String) extends java.io.IOException(message)
 
-class CsvParser private(reader: Reader) {
+class CsvParser(reader: Reader) {
 
 	def read(): Array[String] = read_main(
 			RECORD_BEGIN,
@@ -44,6 +44,9 @@ class CsvParser private(reader: Reader) {
 				field.toString :: record)
 			case 'ERROR =>
 				throw new CsvException("Invalid CSV format")
+			case _ => read_main(trans.state,
+				field,
+				record)
 		}
 	}
 
