@@ -20,43 +20,45 @@ class CsvException(message: String) extends java.io.IOException(message)
 
 class CsvParser(reader: Reader) {
 
-	def read(): Array[String] = read_main(
-			RECORD_BEGIN,
-			new StringBuilder,
-			List[String]())
+	def read(): Array[String] =
+		read_main(RECORD_BEGIN, new StringBuilder, List[String]())
 
-	private def read_main(state: Int=>Trans,
-		field: StringBuilder,
-		record: List[String]): Array[String] = {
+	private type State = Int=>Trans
 
-		if (state == RECORD_END) {
-			return if (record.isEmpty) null else record.reverse.toArray
-		}
-
-		var ch: Int = reader.read()
-		val trans: Trans = state(ch)
-		trans.action match {
-			case 'APPEND => read_main(trans.state,
-				field + ch.asInstanceOf[Char],
-				record)
-			case 'FLUSH => read_main(trans.state,
-				new StringBuilder,
-				field.toString :: record)
-			case 'ERROR =>
-				throw new CsvException("Invalid CSV format")
-			case _ => read_main(trans.state,
-				field,
-				record)
+	private def read_main(state: State,
+			field: StringBuilder,
+			record: List[String]): Array[String] = state match {
+		case RECORD_END =>
+			if (record.isEmpty) null else record.reverse.toArray
+		case _ => {
+			val ch = reader.read()
+			val trans = state(ch)
+			trans.action match {
+				case 'APPEND => read_main(trans.state,
+					field + ch.asInstanceOf[Char],
+					record)
+				case 'FLUSH => read_main(trans.state,
+					new StringBuilder,
+					field.toString :: record)
+				case 'NONE => read_main(trans.state,
+					field,
+					record)
+				case 'ERROR =>
+					throw new CsvException("Invalid CSV format")
+				case _ => read_main(trans.state,
+					field,
+					record)
+			}
 		}
 	}
 
-	class Trans(act: Symbol, sta: Int=>Trans) {
+	private class Trans(act: Symbol, sta: State) {
 		val action: Symbol = act
-		val state: Int=>Trans = sta
+		val state: State = sta
 	}
 
 	/** 状態: RECORD_BEGIN */
-	private val RECORD_BEGIN: Int=>Trans =
+	private val RECORD_BEGIN: State =
 		(ch: Int) => ch match {
 			case ','  => new Trans('FLUSH,  FIELD_BEGIN)
 			case '"'  => new Trans('NONE,   ESCAPED)
@@ -67,7 +69,7 @@ class CsvParser(reader: Reader) {
 		}
 
 	/** 状態: FIELD_BEGIN */
-	private val FIELD_BEGIN: Int=>Trans =
+	private val FIELD_BEGIN: State =
 		(ch: Int) => ch match {
 			case ','  => new Trans('FLUSH,  FIELD_BEGIN)
 			case '"'  => new Trans('NONE,   ESCAPED)
@@ -78,7 +80,7 @@ class CsvParser(reader: Reader) {
 		}
 
 	/** 状態: NONESCAPED */
-	private val NONESCAPED: Int=>Trans =
+	private val NONESCAPED: State =
 		(ch: Int) => ch match {
 			case ','  => new Trans('FLUSH,  FIELD_BEGIN)
 			case '"'  => new Trans('APPEND, NONESCAPED)
@@ -89,7 +91,7 @@ class CsvParser(reader: Reader) {
 		}
 
 	/** 状態: ESCAPED */
-	private val ESCAPED: Int=>Trans =
+	private val ESCAPED: State =
 		(ch: Int) => ch match {
 			case ','  => new Trans('APPEND, ESCAPED)
 			case '"'  => new Trans('NONE,   DQUOTE)
@@ -100,7 +102,7 @@ class CsvParser(reader: Reader) {
 		}
 
 	/** 状態: DQUOTE */
-	private val DQUOTE: Int=>Trans =
+	private val DQUOTE: State =
 		(ch: Int) => ch match {
 			case ','  => new Trans('FLUSH,  FIELD_BEGIN)
 			case '"'  => new Trans('APPEND, ESCAPED)
@@ -111,7 +113,7 @@ class CsvParser(reader: Reader) {
 		}
 
 	/** 状態: CR */
-	private val CR: Int=>Trans =
+	private val CR: State =
 		(ch: Int) => ch match {
 			case ','  => new Trans('ERROR,  null)
 			case '"'  => new Trans('ERROR,  null)
@@ -122,7 +124,7 @@ class CsvParser(reader: Reader) {
 		}
 
 	/** 状態: RECORD_END */
-	private val RECORD_END: Int=>Trans =
+	private val RECORD_END: State =
 		(ch: Int) => null
 
 }
