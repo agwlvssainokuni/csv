@@ -57,70 +57,74 @@ class CsvParser(reader: Reader) {
 		val state: State = sta
 	}
 
+	private object Trans {
+		def apply(act: Symbol, sta: State) = new Trans(act, sta)
+	}
+
 	/** 状態: RECORD_BEGIN */
 	private val RECORD_BEGIN: State =
 		(ch: Int) => ch match {
-			case ','  => new Trans('FLUSH,  FIELD_BEGIN)
-			case '"'  => new Trans('NONE,   ESCAPED)
-			case '\r' => new Trans('FLUSH,  CR)
-			case '\n' => new Trans('FLUSH,  RECORD_END)
-			case -1   => new Trans('NONE,   RECORD_END)
-			case _    => new Trans('APPEND, NONESCAPED)
+			case ','  => Trans('FLUSH,  FIELD_BEGIN)
+			case '"'  => Trans('NONE,   ESCAPED)
+			case '\r' => Trans('FLUSH,  CR)
+			case '\n' => Trans('FLUSH,  RECORD_END)
+			case -1   => Trans('NONE,   RECORD_END)
+			case _    => Trans('APPEND, NONESCAPED)
 		}
 
 	/** 状態: FIELD_BEGIN */
 	private val FIELD_BEGIN: State =
 		(ch: Int) => ch match {
-			case ','  => new Trans('FLUSH,  FIELD_BEGIN)
-			case '"'  => new Trans('NONE,   ESCAPED)
-			case '\r' => new Trans('FLUSH,  CR)
-			case '\n' => new Trans('FLUSH,  RECORD_END)
-			case -1   => new Trans('FLUSH,  RECORD_END)
-			case _    => new Trans('APPEND, NONESCAPED)
+			case ','  => Trans('FLUSH,  FIELD_BEGIN)
+			case '"'  => Trans('NONE,   ESCAPED)
+			case '\r' => Trans('FLUSH,  CR)
+			case '\n' => Trans('FLUSH,  RECORD_END)
+			case -1   => Trans('FLUSH,  RECORD_END)
+			case _    => Trans('APPEND, NONESCAPED)
 		}
 
 	/** 状態: NONESCAPED */
 	private val NONESCAPED: State =
 		(ch: Int) => ch match {
-			case ','  => new Trans('FLUSH,  FIELD_BEGIN)
-			case '"'  => new Trans('APPEND, NONESCAPED)
-			case '\r' => new Trans('FLUSH,  CR)
-			case '\n' => new Trans('FLUSH,  RECORD_END)
-			case -1   => new Trans('FLUSH,  RECORD_END)
-			case _    => new Trans('APPEND, NONESCAPED)
+			case ','  => Trans('FLUSH,  FIELD_BEGIN)
+			case '"'  => Trans('APPEND, NONESCAPED)
+			case '\r' => Trans('FLUSH,  CR)
+			case '\n' => Trans('FLUSH,  RECORD_END)
+			case -1   => Trans('FLUSH,  RECORD_END)
+			case _    => Trans('APPEND, NONESCAPED)
 		}
 
 	/** 状態: ESCAPED */
 	private val ESCAPED: State =
 		(ch: Int) => ch match {
-			case ','  => new Trans('APPEND, ESCAPED)
-			case '"'  => new Trans('NONE,   DQUOTE)
-			case '\r' => new Trans('APPEND, ESCAPED)
-			case '\n' => new Trans('APPEND, ESCAPED)
-			case -1   => new Trans('ERROR,  null)
-			case _    => new Trans('APPEND, ESCAPED)
+			case ','  => Trans('APPEND, ESCAPED)
+			case '"'  => Trans('NONE,   DQUOTE)
+			case '\r' => Trans('APPEND, ESCAPED)
+			case '\n' => Trans('APPEND, ESCAPED)
+			case -1   => Trans('ERROR,  null)
+			case _    => Trans('APPEND, ESCAPED)
 		}
 
 	/** 状態: DQUOTE */
 	private val DQUOTE: State =
 		(ch: Int) => ch match {
-			case ','  => new Trans('FLUSH,  FIELD_BEGIN)
-			case '"'  => new Trans('APPEND, ESCAPED)
-			case '\r' => new Trans('FLUSH,  CR)
-			case '\n' => new Trans('FLUSH,  RECORD_END)
-			case -1   => new Trans('FLUSH,  RECORD_END)
-			case _    => new Trans('ERROR,  null)
+			case ','  => Trans('FLUSH,  FIELD_BEGIN)
+			case '"'  => Trans('APPEND, ESCAPED)
+			case '\r' => Trans('FLUSH,  CR)
+			case '\n' => Trans('FLUSH,  RECORD_END)
+			case -1   => Trans('FLUSH,  RECORD_END)
+			case _    => Trans('ERROR,  null)
 		}
 
 	/** 状態: CR */
 	private val CR: State =
 		(ch: Int) => ch match {
-			case ','  => new Trans('ERROR,  null)
-			case '"'  => new Trans('ERROR,  null)
-			case '\r' => new Trans('NONE,   CR)
-			case '\n' => new Trans('NONE,   RECORD_END)
-			case -1   => new Trans('NONE,   RECORD_END)
-			case _    => new Trans('ERROR,  null)
+			case ','  => Trans('ERROR,  null)
+			case '"'  => Trans('ERROR,  null)
+			case '\r' => Trans('NONE,   CR)
+			case '\n' => Trans('NONE,   RECORD_END)
+			case -1   => Trans('NONE,   RECORD_END)
+			case _    => Trans('ERROR,  null)
 		}
 
 	/** 状態: RECORD_END */
