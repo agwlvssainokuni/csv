@@ -74,9 +74,9 @@ CSVパーサ
       * sys     0m6.912s
 * Scala
    * コンパイル実行
-      * real    0m12.503s
-      * user    0m10.877s
-      * sys     0m2.044s
+      * real    0m12.864s
+      * user    0m10.585s
+      * sys     0m2.652s
 * Scheme (Gauche)
    * 当パーサ
       * real    0m18.738s
